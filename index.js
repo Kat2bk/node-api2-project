@@ -7,7 +7,7 @@ server.use(express.json());
 
 // server.use(...postsRouter)
 
-const port = 8000;
+const port = 5000;
 
 server.get('/', (req, res) => {
     res.send('Welcome to the API')
