@@ -94,7 +94,7 @@ router.post('/:id/comments', (req, res) => {
     }
 
     if (!comment.text) {
-      return res.status(404).json({
+      return res.status(400).json({
             message: "The post with this id does not exist"
         })
     } else {
@@ -109,6 +109,84 @@ router.post('/:id/comments', (req, res) => {
             })
         })
     }
+})
+
+router.delete('/:id', (req, res) => {
+    const {id} = req.params;
+
+    if (!id) {
+      return res.status(404).json({
+            message: "The post with the specified ID does not exist."
+        })
+    } else {
+        Posts.remove(id)
+        .then(post => {
+            res.status(200).json(post)
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json({
+                errorMessage: "The post could not be removed"
+            })
+        })
+    }
+})
+
+// router.put(':id', (req, res) => {
+//     const {id} = req.params;
+//     const updatedPost = {
+//         title: req.body.title,
+//         contents: req.body.contents
+//     }
+
+//     if (!updatedPost.title || !updatedPost.contents ) {
+//         return res.status(400).json({
+//             message: "Please provide title and contents for the post"
+//         })
+//     } else {
+//         Posts.update(id, updatedPost)
+//         .then(post => {
+//             if (updatedPost) {
+//                 res.status(200).json(post)
+//             } else {
+//                 res.status(404).json({
+//                     message: "The post with this id does not exist"
+//                 })
+//             }
+//         })
+//         .catch(error => {
+//             console.log(error)
+//             res.status(500).json({
+//                 errorMessage: "The post info could not be updated"
+//             })
+//         })
+//     }
+// })
+
+router.put('/:id', (req, res) => {
+    const {id} = req.params;
+    const updatedPost = {
+        title: req.body.title,
+        contents: req.body.contents
+    };
+
+    if(!updatedPost.title || !updatedPost.contents) {
+       return res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+    } else {
+        Posts.update(id, updatedPost)
+        .then(post => {
+            if (post) {
+            res.status(200).json(post);
+            } else {
+            res.status(404).json({ message: "The post with the specified ID does not exist."} )
+        }
+    })
+    .catch(error => {
+        console.log(error);
+        res.status(500).json({ error: "The post information could not be modified." })
+    })
+    }
+    
 })
 
 
